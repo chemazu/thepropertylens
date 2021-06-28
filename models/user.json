@@ -1,0 +1,16 @@
+[
+  {
+    "name": "user",
+    "email": "user@gmail.com",
+    "password": "123456789",
+    "accountType": "user",
+    "craft": "Carpenter"
+  },
+  {
+    "name": "publisher",
+    "email": "publisher@gmail.com",
+    "password": "123456789",
+    "accountType": "user",
+    "craft": "Carpenter"
+  }
+]

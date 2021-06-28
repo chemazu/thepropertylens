@@ -1,22 +1,95 @@
+const path = require("path");
 const Listing = require("../models/Listing.model");
 const ErrorResponse = require("../utils/errorResponse");
 
 //add Listing
 //route: "post" /add
 //access : private
-
+// exports.addListing = async (req, res, next) => {
+//   try {
+//     const newListing = await Listing.create(req.body);
+//     if (!newListing) {
+//       return next(new ErrorResponse(`Error in creating new Listing`, 500));
+//     }
+//     res.status(201).json({ success: true, data: newListing });
+//   } catch (error) {
+//     next(new ErrorResponse(`Error in creating new Listing`, 500));
+//   }
+//   next();
+// };
+// exports.addListing = async (req, res, next) => {
+//   res.status(200).json({ status: true, msg: 234 });
+// };
 exports.addListing = async (req, res, next) => {
-  try {
-    const newListing = await Listing.create(req.body);
-    if (!newListing) {
-      return next(new ErrorResponse(`Error in creating new Listing`, 500));
-    }
-    res.status(201).json({ success: true, data: newListing });
-  } catch (error) {
-    next(new ErrorResponse(`Error in creating new Listing`, 500));
+  const reqListing = JSON.parse(req.body.listing);
+  // console.log(JSON.parse(req.body.listing));
+  // const { images } = reqListing;
+  let imageArray = [];
+  const { file } = req.files;
+  let { images } = reqListing;
+
+  if (!req.files) {
+    return next(new ErrorResponse(`Please upload a file`, 404));
   }
-  next();
+  file.map((item) => {
+    if (!item.mimetype.startsWith("image")) {
+      return next(new ErrorResponse(`Please upload an image`, 404));
+    }
+    if (item.size > process.env.MAX_FILE_UPLOAD) {
+      return next(
+        new ErrorResponse(
+          `Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
+          404
+        )
+      );
+    }
+    item.name = item.name.split(" ").join("_");
+    item.mv(`${process.env.FILE_UPLOAD_PATH}/${item.name}`, async (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+  });
+  // console.log(imageArray, "down");
+  // const newListing = await Listing.create(reqListing);
+  // console.log(newListing);
 };
+
+//add photos
+//route: "post" /upload
+//access : private
+exports.photoUpload = async (req, res, next) => {
+  console.log(req.params.id);
+};
+
+// exports.photoUpload = async (req, res, next) => {
+//   const imageArray = [];
+//   const { file } = req.files;
+//   if (!req.files) {
+//     return next(new ErrorResponse(`Please upload a file`, 404));
+//   }
+//   file.map((item) => {
+//     if (!item.mimetype.startsWith("image")) {
+//       return next(new ErrorResponse(`Please upload an image`, 404));
+//     }
+//     if (item.size > process.env.MAX_FILE_UPLOAD) {
+//       return next(
+//         new ErrorResponse(
+//           `Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
+//           404
+//         )
+//       );
+//     }
+//     item.name = item.name.split(" ").join("_");
+//     item.mv(`${process.env.FILE_UPLOAD_PATH}/${item.name}`, async (err) => {
+//       imageArray.push(`${item.name.split(" ").join("_")}`);
+//       console.log(imageArray);
+//       if (err) {
+//         console.log(err);
+//       }
+//     });
+//   });
+// };
 //view all Listing
 //route: "get" /listings
 //access : private
@@ -61,22 +134,16 @@ exports.getListings = async (req, res, next) => {
   if (startIndex > 0) {
     pagination.prev = { page: page - 1, limit: limit };
   }
-  // res.advancedResults = {
-  //   success: true,
-  //   count: result.length,
-  //   pagination,
-  //   data: result,
-  // };
   res
     .status(200)
     .json({ success: true, count: result.length, pagination, data: result });
   //   next(new ErrorResponse(`No Sample found with id of ${req.params.id}`, 404));
   next();
 };
+
 //view listing by id
 //route: "get" /listing/:id
 //access : private
-
 exports.getListing = async (req, res, next) => {
   try {
     const listing = await Listing.findById(req.params.id);

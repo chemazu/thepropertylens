@@ -14,7 +14,7 @@ const Listing = new Schema({
   bathrooms: { type: String, required: true },
   Furnished: { type: String },
   Serviced: { type: String },
-  arking: { type: String },
+  parking: { type: String },
   images: [String],
   createdAt: {
     type: Date,

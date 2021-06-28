@@ -1,0 +1,21 @@
+{
+  userId ,
+  title ,
+  location ,
+  description ,
+  status ,
+  category ,
+  type ,
+  area ,
+  address ,
+  price ,
+  bedrooms ,
+  toilets ,
+  bathrooms ,
+  parking ,
+  totalArea ,
+  furnished ,
+  serviced ,
+  images ,
+  more 
+}

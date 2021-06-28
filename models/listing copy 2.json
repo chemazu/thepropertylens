@@ -1,0 +1,21 @@
+{
+  "userId": "dummytext",
+  "title": "dummytext",
+  "location": "dummytext",
+  "description": "dummytext",
+  "status": "dummytext",
+  "category": "dummytext",
+  "type": "dummytext",
+  "area": "dummytext",
+  "address": "dummytext",
+  "price": "dummytext",
+  "bedrooms": "dummytext",
+  "toilets": "dummytext",
+  "bathrooms": "dummytext",
+  "parking": "dummytext",
+  "totalArea": "dummytext",
+  "furnished": "dummytext",
+  "serviced": "dummytext",
+  "images": ["dummytext", "dummytext", "dummytext"],
+  "more": "dummytext"
+}
