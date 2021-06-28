@@ -11,7 +11,6 @@ const errorHandler = require("./middleware/error");
 dotenv.config();
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
-// express.urlencoded()
 app.use(express.json());
 
 // connect to database
@@ -27,6 +26,7 @@ mongoose
   .catch((err) => {
     console.log("the error is", err);
   });
+//file upload
 app.use(fileUpload());
 //set static
 app.use(express.static(path.join(__dirname, "public")));
@@ -37,7 +37,6 @@ app.use("/", require("./routes/user"));
 
 app.use(errorHandler);
 
-//file upload
 app.listen(PORT, () => {
   console.log(`currently running on ${PORT}`);
 });
