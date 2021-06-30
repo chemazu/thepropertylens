@@ -8,6 +8,7 @@ const ErrorResponse = require("../utils/errorResponse");
 
 exports.addListing = async (req, res, next) => {
   const reqListing = JSON.parse(req.body.listing);
+  console.log(reqListing);
   const { images } = reqListing;
   const { file } = req.files;
   if (!req.files) {
@@ -53,7 +54,9 @@ exports.getListings = async (req, res, next) => {
   const removeFields = ["select", "sort", "page", "limit"];
   removeFields.forEach((param) => delete reqQuery[param]);
   let query;
-  query = Listing.find(reqQuery);
+  console.log(reqQuery);
+  console.log(req.params.id);
+  query = Listing.find({ userId: req.params.id }); //here is where to modify
   //select
   //selects what fields will be returned by the json file
   if (req.query.select) {
@@ -94,7 +97,11 @@ exports.getListings = async (req, res, next) => {
   //   next(new ErrorResponse(`No Sample found with id of ${req.params.id}`, 404));
   next();
 };
-
+//getMylistings
+exports.getMyListings = async (req, res, next) => {
+  eggs = await Listing.find({ userId: req.params.id });
+  console.log(eggs);
+};
 //view listing by id
 //route: "get" /listing/:id
 //access : private

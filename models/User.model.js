@@ -35,6 +35,10 @@ const User = new Schema(
       minlength: [8, "Must be more than 8 Characters"],
       select: false,
     },
+    // Phone Number
+    // Address One
+    //about me
+    // savedListings
     resetPasswordToke: String,
     resetPasswordExpire: Date,
     createdAt: {

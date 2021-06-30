@@ -46,5 +46,21 @@ const sendTokenResponse = (user, statusCode, res) => {
   res
     .status(statusCode)
     .cookie("token", token, options)
-    .json({ success: true, token });
+    .json({ success: true, token, userId: user._id });
+};
+// Get USER
+exports.getUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return next(
+        new ErrorResponse(`No Listing found with id of ${req.params.id}`, 404)
+      );
+    }
+    res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    next(
+      new ErrorResponse(`No listing found with id of ${req.params.id}`, 404)
+    );
+  }
 };
