@@ -5,7 +5,6 @@ const ErrorResponse = require("../utils/errorResponse");
 //add Listing
 //route: "post" /add
 //access : private
-
 exports.addListing = async (req, res, next) => {
   const reqListing = JSON.parse(req.body.listing);
   console.log(reqListing);
@@ -56,7 +55,28 @@ exports.getListings = async (req, res, next) => {
   let query;
   console.log(reqQuery);
   console.log(req.params.id);
-  query = Listing.find({ userId: req.params.id }); //here is where to modify
+  if (req.params.id === "rent") {
+    query = Listing.find({ status: "For Rent" }); //here is where to modify
+    console.log(query);
+  }
+  if (req.params.id === "featured") {
+    query = Listing.find({ status: "For Featured" }); //here is where to modify
+    console.log(query);
+  }
+  if (req.params.id === "buy") {
+    query = Listing.find({ status: "For Sale" }); //here is where to modify
+    console.log(query);
+  }
+  //featured
+  //sale
+  if (req.params.id === "rent") {
+    query = Listing.find({ status: "For Rent" }); //here is where to modify
+    console.log(query);
+  } else {
+    query = Listing.find({ userId: req.params.id });
+  } //here is where to modify
+  // query = Listing.find({ address: "fish" }); //here is where to modify
+
   //select
   //selects what fields will be returned by the json file
   if (req.query.select) {

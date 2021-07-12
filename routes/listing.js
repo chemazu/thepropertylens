@@ -1,4 +1,6 @@
 const { Router } = require("express");
+const { protect } = require("../middleware/auth");
+
 const {
   addListing,
   updateListing,
@@ -13,7 +15,7 @@ const router = Router();
 router.post("/add", addListing);
 router.put("/update/:id", updateListing);
 router.delete("/delete/:id", deleteListing);
-router.get("/listing/:id", getListing);
-router.get("/listings/:id", getListings);
+router.get("/listing/:id", protect, getListing);
+router.get("/listings/:id", getListings); //my listing
 
 module.exports = router;
