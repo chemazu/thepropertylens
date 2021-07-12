@@ -34,6 +34,8 @@ app.use(express.static(path.join(__dirname, "public")));
 //routes
 app.use("/listing", require("./routes/listing"));
 app.use("/", require("./routes/user"));
+app.use("/request", require("./routes/request"));
+// app.use("/request", require("./routes/request"));
 
 app.use(errorHandler);
 
