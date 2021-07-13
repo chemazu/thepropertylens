@@ -16,3 +16,15 @@ exports.addRequest = async (req, res, next) => {
     next(new ErrorResponse(`Error in creating new Request`, 500));
   }
 };
+
+exports.getRequests = async (req, res, next) => {
+  try {
+    const requests = await Request.find();
+    if (!requests) {
+      return next(new ErrorResponse(`Error in getting requests`, 500));
+    }
+    res.status(201).json({ success: true, data: requests });
+  } catch (error) {
+    next(new ErrorResponse(`Error in getting requests`, 500));
+  }
+};
