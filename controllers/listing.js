@@ -49,9 +49,13 @@ exports.addListing = async (req, res, next) => {
 //route: "get" /listings
 //access : private
 exports.heroku = async (req, res, next) => {
-  console.log(req.params.id);
-  const response = await Listing.find();
-  console.log(response);
+  try {
+    console.log(req.params.id);
+    const response = await Listing.find();
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
 };
 exports.getListings = async (req, res, next) => {
   try {
