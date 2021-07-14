@@ -51,11 +51,7 @@ exports.addListing = async (req, res, next) => {
 exports.heroku = async (req, res, next) => {
   console.log(req.params.id);
   const response = await Listing.find();
-  if (response) {
-    res.status(200).json({ msg: "ty", response });
-  } else {
-    res.status(200).json({ er: "sad" });
-  }
+  console.log(response);
 };
 exports.getListings = async (req, res, next) => {
   try {
