@@ -1,3 +1,4 @@
+const { query } = require("express");
 const path = require("path");
 const Listing = require("../models/Listing.model");
 const ErrorResponse = require("../utils/errorResponse");
@@ -47,7 +48,15 @@ exports.addListing = async (req, res, next) => {
 //view all Listing
 //route: "get" /listings
 //access : private
-
+exports.heroku = async (req, res, next) => {
+  try {
+    query = Listing.find({ userId: req.params.id });
+    res.status(200).json({ success: true, data: query });
+    next();
+  } catch (error) {
+    console.log(error);
+  }
+};
 exports.getListings = async (req, res, next) => {
   try {
     const reqQuery = { ...req.query }; //query can be gotten after you put a ?... ie ?select=rg,the first query starts with ? and subsequent ones have&
