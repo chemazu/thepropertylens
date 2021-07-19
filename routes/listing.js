@@ -16,7 +16,7 @@ router.post("/add", addListing);
 // router.post("/add2", addListing2);
 router.put("/update/:id", updateListing);
 router.delete("/delete/:id", deleteListing);
-router.get("/listing/:id", protect, getListing);
+router.get("/listing/:id", getListing);
 router.get("/listings/:id", getListings); //my listing
 
 module.exports = router;

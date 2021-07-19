@@ -1,3 +1,4 @@
+const { query } = require("express");
 const path = require("path");
 const asyncHandler = require("../middleware/async");
 const Listing = require("../models/Listing.model");
@@ -10,10 +11,25 @@ exports.addListing = async (req, res, next) => {
   const listing = JSON.parse(req.body.listing);
   console.log(listing);
   const { images } = listing;
-  const { file } = req.files;
   if (!req.files) {
     return next(new ErrorResponse(`Please upload a file`, 404));
   }
+
+  //SETTING THUMBNAIL
+  const { thumbnail } = req.files;
+  thumbnailName = `${thumbnail.md5}${thumbnail.name.split(" ").join("_")}`;
+  thumbnail.mv(
+    `${process.env.FILE_UPLOAD_PATH}/${thumbnailName}`,
+    async (err) => {
+      if (err) {
+        new ErrorResponse(`Error Uploading ${err}`, 404);
+      }
+    }
+  );
+  listing.thumbnail = thumbnailName;
+
+  //SETTING GALLERY
+  let { file } = req.files;
   file.map((item) => {
     if (!item.mimetype.startsWith("image")) {
       return next(new ErrorResponse(`Please upload an image`, 404));
@@ -30,12 +46,13 @@ exports.addListing = async (req, res, next) => {
     images.push(item.name);
     item.mv(`${process.env.FILE_UPLOAD_PATH}/${item.name}`, async (err) => {
       if (err) {
-        console.log(err);
+        new ErrorResponse(`Error Uploading ${err}`, 404);
       }
     });
   });
   try {
     const newListing = await Listing.create(listing);
+    console.log(newListing);
     if (!newListing) {
       return next(new ErrorResponse(`Error in creating new Listing`, 500));
     }
@@ -44,7 +61,6 @@ exports.addListing = async (req, res, next) => {
     next(new ErrorResponse(`Error in creating new Listing`, 500));
   }
 };
-
 //view all Listing
 //route: "get" /listings
 //access : private

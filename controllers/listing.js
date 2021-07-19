@@ -7,6 +7,22 @@ const ErrorResponse = require("../utils/errorResponse");
 //add Listing
 //route: "post" /add
 //access : private
+// exports.addListing = async (req, res, next) => {
+//   console.log(req.body);
+//   const { thumbnail, file } = req.files;
+//   console.log(thumbnail);
+//   console.log(file);
+
+//   try {
+//     console.log(req.body);
+//     const fish = await Listing.create(req.body);
+//     console.log(fish);
+
+//     res.status(201).json({ success: true, data: fish });
+//   } catch (error) {
+//     next(new ErrorResponse(`Error in creating new Listing`, 500));
+//   }
+// };
 exports.addListing = async (req, res, next) => {
   const listing = JSON.parse(req.body.listing);
   const { images } = listing;
@@ -16,6 +32,7 @@ exports.addListing = async (req, res, next) => {
 
   //SETTING THUMBNAIL
   const { thumbnail } = req.files;
+  console.log(thumbnail);
   thumbnailName = `${thumbnail.md5}${thumbnail.name.split(" ").join("_")}`;
   thumbnail.mv(
     `${process.env.FILE_UPLOAD_PATH}/${thumbnailName}`,
@@ -26,7 +43,7 @@ exports.addListing = async (req, res, next) => {
     }
   );
   listing.thumbnail = thumbnailName;
-
+  console.log(listing.thumbnail);
   //SETTING GALLERY
   let { file } = req.files;
   file.map((item) => {
@@ -50,6 +67,7 @@ exports.addListing = async (req, res, next) => {
     });
   });
   try {
+    console.log(listing);
     const newListing = await Listing.create(listing);
     if (!newListing) {
       return next(new ErrorResponse(`Error in creating new Listing`, 500));
@@ -80,15 +98,15 @@ exports.getListings = async (req, res, next) => {
     console.log(reqQuery);
     console.log(req.params.id);
     if (req.params.id === "rent") {
-      query = Listing.find({ status: "For Rent" }); //here is where to modify
+      query = Listing.find({ status: "rent" }); //here is where to modify
       console.log(query);
     }
     if (req.params.id === "featured") {
-      query = Listing.find({ status: "For Featured" }); //here is where to modify
+      query = Listing.find({ status: "featured" }); //here is where to modify
       console.log(query);
     }
     if (req.params.id === "buy") {
-      query = Listing.find({ status: "For Sale" }); //here is where to modify
+      query = Listing.find({ status: "sale" }); //here is where to modify
       console.log(query);
     }
     //featured
