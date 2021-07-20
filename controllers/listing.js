@@ -7,29 +7,12 @@ const ErrorResponse = require("../utils/errorResponse");
 //add Listing
 //route: "post" /add
 //access : private
-// exports.addListing = async (req, res, next) => {
-//   console.log(req.body);
-//   const { thumbnail, file } = req.files;
-//   console.log(thumbnail);
-//   console.log(file);
-
-//   try {
-//     console.log(req.body);
-//     const fish = await Listing.create(req.body);
-//     console.log(fish);
-
-//     res.status(201).json({ success: true, data: fish });
-//   } catch (error) {
-//     next(new ErrorResponse(`Error in creating new Listing`, 500));
-//   }
-// };
 exports.addListing = async (req, res, next) => {
   const listing = JSON.parse(req.body.listing);
   const { images } = listing;
-  if (!req.files) {
+  if (req.files === null) {
     return next(new ErrorResponse(`Please upload a file`, 404));
   }
-
   //SETTING THUMBNAIL
   const { thumbnail } = req.files;
   console.log(thumbnail);
@@ -74,7 +57,9 @@ exports.addListing = async (req, res, next) => {
     }
     res.status(201).json({ success: true, data: newListing });
   } catch (error) {
-    next(new ErrorResponse(`Error in creating new Listing`, 500));
+    return next(
+      new ErrorResponse(`Error in creating new Listing ${error.message}`, 500)
+    );
   }
 };
 //view all Listing
@@ -95,19 +80,23 @@ exports.getListings = async (req, res, next) => {
     const removeFields = ["select", "sort", "page", "limit"];
     removeFields.forEach((param) => delete reqQuery[param]);
     let query;
-    console.log(reqQuery);
-    console.log(req.params.id);
-    if (req.params.id === "rent") {
-      query = Listing.find({ status: "rent" }); //here is where to modify
-      console.log(query);
-    }
-    if (req.params.id === "featured") {
-      query = Listing.find({ status: "featured" }); //here is where to modify
-      console.log(query);
-    }
+    // if (req.params.id === "rent") {
+    //   query = Listing.find({ status: "rent" }); //here is where to modify
+    //   console.log(query);
+    // }
+    // if (req.params.id === "featured") {
+    //   query = Listing.find({ status: "featured" }); //here is where to modify
+    //   console.log(query);
+    // }
     if (req.params.id === "buy") {
-      query = Listing.find({ status: "sale" }); //here is where to modify
-      console.log(query);
+      query = Listing.find({ status: "sale" });
+      const rice = await Listing.find({ status: "sale" });
+      console.log(rice);
+      return res.status(200).json({
+        success: true,
+        count: rice.length,
+        data: rice,
+      });
     }
     //featured
     //sale
@@ -145,6 +134,7 @@ exports.getListings = async (req, res, next) => {
     //   query = query.populate(populate);
     // }
     const result = await query;
+    console.log(result);
     const pagination = {};
     //pagination results
     if (endIndex < total) {

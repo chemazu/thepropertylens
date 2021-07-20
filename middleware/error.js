@@ -8,13 +8,13 @@ const errorHandler = (error, req, res, next) => {
   }
   if (error.code === 11000) {
     const message = `${Object.entries(error.keyValue)}, already exists`;
+    console.log("error probs duplicate", message);
     err = new ErrorResponse(message, 404);
     // Object.entries(error.keyValue)[0][1]; // someVal
   }
-  console.lo;
   res
     .status(err.statusCode || 500)
-    .json({ success: false, error: err.message, stuff: error });
+    .json({ success: false, error: err.message, status: error });
   next();
 };
 module.exports = errorHandler;
