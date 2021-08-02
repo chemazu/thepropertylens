@@ -15,7 +15,6 @@ exports.addListing = async (req, res, next) => {
   }
   //SETTING THUMBNAIL
   const { thumbnail } = req.files;
-  console.log(thumbnail);
   thumbnailName = `${thumbnail.md5}${thumbnail.name.split(" ").join("_")}`;
   thumbnail.mv(
     `${process.env.FILE_UPLOAD_PATH}/${thumbnailName}`,
@@ -26,7 +25,6 @@ exports.addListing = async (req, res, next) => {
     }
   );
   listing.thumbnail = thumbnailName;
-  console.log(listing.thumbnail);
   //SETTING GALLERY
   let { file } = req.files;
   file.map((item) => {
@@ -50,7 +48,6 @@ exports.addListing = async (req, res, next) => {
     });
   });
   try {
-    console.log(listing);
     const newListing = await Listing.create(listing);
     if (!newListing) {
       return next(new ErrorResponse(`Error in creating new Listing`, 500));
@@ -67,30 +64,49 @@ exports.addListing = async (req, res, next) => {
 //access : public
 //get multiple listings, buy user,type,status...
 
-const handleRequest = async (value) => {
-  console.log(value);
+const handleStatus = async (value) => {
   const rice = await Listing.find({ status: value });
+  return rice;
+};
+const handleType = async (value) => {
+  const rice = await Listing.find({ type: value });
   return rice;
 };
 exports.getListings = async (req, res, next) => {
   try {
     //featured, rent, buy
     if (req.params.id === "buy") {
-      const fish = await handleRequest("sale");
+      const fish = await handleStatus("sale");
       return res.status(200).json({
         success: true,
         count: fish.length,
         data: fish,
       });
     }
-    if (req.params.id === "rent" || "featured") {
-      const fish = await handleRequest(req.params.id);
+    if (req.params.id === "rent" || req.params.id === "featured") {
+      const fish = await handleStatus(req.params.id.toLowerCase());
+      return res.status(200).json({
+        success: true,
+        count: fish.length,
+        data: fish,
+      });
+    }
+    if (
+      req.params.id == "Commercial" ||
+      req.params.id == "residential" ||
+      req.params.id == "villas" ||
+      req.params.id == "apartments" ||
+      req.params.id == "beach" ||
+      req.params.id == "duplex"
+    ) {
+      const fish = await handleType(req.params.id.toLowerCase());
       return res.status(200).json({
         success: true,
         count: fish.length,
         data: fish,
       });
     } else {
+      console.log("else");
       const fish = await Listing.find({ userId: req.params.id });
       return res.status(200).json({
         success: true,
@@ -99,7 +115,7 @@ exports.getListings = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    error;
     next(new ErrorResponse(`No Sample found with id of ${req.params.id}`, 404));
   }
 };
